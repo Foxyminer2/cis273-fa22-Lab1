@@ -6,12 +6,14 @@ namespace Polynomial
 		public int Power { get; set; }
 		public double Coefficient { get; set; }
 
-		public Term(int power, double coeffecient)
+		public Term(int power, double coefficient)
 		{
 			Power = power;
-            Coefficient = coeffecient;
+            Coefficient = coefficient;
 		}
 
+
+		//TODO
 		public override string ToString()
 		{
 			return $"{Coefficient}x^{Power}";
