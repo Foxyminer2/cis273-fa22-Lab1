@@ -145,7 +145,25 @@ namespace KthToLast
         // Incomplete
         public void InsertAfter(T newValue, T existingValue)
         {
-            
+            var currentNode = Head;
+            int count = 0;
+
+            if (IsEmpty || Contains(existingValue) == false)
+            {
+                Append(newValue);
+            }
+
+            else
+            {
+                while (currentNode != null && !(currentNode.Data.Equals(existingValue)))
+                {
+                    currentNode = currentNode.Next;
+                    count++;
+                }
+
+                InsertAt(newValue, count + 1);
+            }
+
         }
 
         public void InsertAt(T value, int index)
@@ -281,7 +299,63 @@ namespace KthToLast
         // Incomplete
         public void RemoveAt(int index)
         {
-            
+            if (index < 0 || index >= length)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+
+            if (index < length && index >= 0)
+            {
+
+                var currentNode = Head;
+                int currentIndex = 0;
+
+
+                if (index == 0)
+                {
+                    var deleteHead = currentNode.Next;
+
+                    Head = currentNode.Next;
+
+                    length--;
+                    return;
+                }
+
+
+
+                while (currentNode != null && currentIndex <= index)
+                {
+
+
+                    if (currentIndex == (index - 1))
+                    {
+                        var prevNode = currentNode;
+                        var nodeToDelete = currentNode.Next;
+                        if (nodeToDelete == Tail)
+                        {
+                            currentNode.Next = null;
+                            Tail = currentNode;
+                        }
+                        else
+                        {
+                            nodeToDelete = currentNode.Next;
+                            prevNode = nodeToDelete.Next;
+                        }
+
+                        length--;
+                        return;
+                    }
+
+
+
+                    currentNode = currentNode.Next;
+                    currentIndex++;
+
+
+                }
+            }
+
         }
 
         // Incomplete

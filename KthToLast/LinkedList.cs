@@ -6,10 +6,12 @@ namespace KthToLast
 {
     public class LinkedListNode<T>
     {
+
+
         public T Data { get; set; }
         public LinkedListNode<T> Next { get; set; }
 
-        public LinkedListNode(T data = default(T), LinkedListNode<T> next=null)
+        public LinkedListNode(T data = default(T), LinkedListNode<T> next = null)
         {
             Data = data;
             Next = next;
@@ -22,24 +24,24 @@ namespace KthToLast
 
     }
 
-	public class LinkedList<T>: IList<T>
-	{
+    public class LinkedList<T> : IList<T>
+    {
         public LinkedListNode<T> Head { get; set; }
         public LinkedListNode<T> Tail { get; set; }
 
-		public LinkedList()
-		{
+        public LinkedList()
+        {
             Head = null;
             Tail = null;
-		}
+        }
 
-        public T? First => IsEmpty ? default(T) : Head.Data;
+        public T? First { get => IsEmpty ? default(T) : this.Head.Data; }
 
-        public T? Last => IsEmpty ? default(T): Tail.Data;
+        public T? Last { get => IsEmpty ? default(T) : this.Tail.Data; }
 
-        public bool IsEmpty => Length == 0;
+        public bool IsEmpty { get => length == 0; }
 
-        // Length is not accesible so you have to use length
+
         private int length = 0;
         public int Length => length;
 
@@ -61,6 +63,7 @@ namespace KthToLast
 
             length++;
 
+
         }
 
         public void Clear()
@@ -73,23 +76,10 @@ namespace KthToLast
 
         public bool Contains(T value)
         {
-            if (length == 0)
+
+            if (FirstIndexOf(value) != -1)
             {
-                return false;
-            }
-
-            // traverse
-
-            var currentNode = Head;
-
-            while (currentNode != null)
-            {
-                if (currentNode.Data.Equals(value))
-                {
-                    return true;
-                }
-
-                currentNode = currentNode.Next;
+                return true;
             }
 
             return false;
@@ -101,9 +91,9 @@ namespace KthToLast
 
             var currentNode = Head;
 
-            while(currentNode!=null)
+            while (currentNode != null)
             {
-                if( currentNode.Data.Equals(value) )
+                if (currentNode.Data.Equals(value))
                 {
                     return index;
                 }
@@ -115,21 +105,19 @@ namespace KthToLast
             return -1;
         }
 
-        public T? Get(int index)
+        public T Get(int index)
         {
+            var currentNode = Head;
+            int currentIndex = 0;
+
             if (index < 0 || index >= length)
             {
                 throw new IndexOutOfRangeException();
             }
 
-            // traverse
-
-            var currentNode = Head;
-            int currentIndex = 0;
-
-            while(currentNode != null)
+            while (currentNode.Next != null)
             {
-                if(currentIndex == index)
+                if (currentIndex == index)
                 {
                     return currentNode.Data;
                 }
@@ -141,10 +129,26 @@ namespace KthToLast
             return default(T);
         }
 
-        // Incomplete
         public void InsertAfter(T newValue, T existingValue)
         {
+            var currentNode = Head;
+            int count = 0;
 
+            if (IsEmpty || Contains(existingValue) == false)
+            {
+                Append(newValue);
+            }
+
+            else
+            {
+                while (currentNode != null && !(currentNode.Data.Equals(existingValue)))
+                {
+                    currentNode = currentNode.Next;
+                    count++;
+                }
+
+                InsertAt(newValue, count + 1);
+            }
         }
 
         public void InsertAt(T value, int index)
@@ -154,137 +158,191 @@ namespace KthToLast
                 throw new IndexOutOfRangeException();
             }
 
-            if(index == 0)
+            if (index == 0)
             {
                 Prepend(value);
             }
 
-            // traverse
+
 
             var currentNode = Head;
             int currentIndex = 0;
 
+
+
             while (currentNode != null)
             {
-                // find the node at index -1
                 if (currentIndex == index - 1)
                 {
-                    //insert new node
-
                     var newNode = new LinkedListNode<T>(value);
-
                     newNode.Next = currentNode.Next;
                     currentNode.Next = newNode;
 
-                    if(currentNode == Tail)
+                    if (currentNode == Tail)
                     {
                         Tail = newNode;
                     }
+
                     length++;
                 }
 
                 currentNode = currentNode.Next;
                 currentIndex++;
             }
-
-            
-           
         }
+
+
 
         public void Prepend(T value)
         {
 
-            var newNode = new LinkedListNode<T>(value);
+            var newHead = new LinkedListNode<T>(value);
 
             if (IsEmpty)
             {
-                Head = newNode;
-                Tail = newNode;
+
+                Head = newHead;
+                Tail = newHead;
             }
 
             else
             {
-                newNode.Next = Head;
-                Head = newNode;
+                newHead.Next = Head;
+                Head = newHead;
+
             }
+
             length++;
-            
+
+
         }
 
         public void Remove(T value)
         {
-            //If list is empty, we're done, son.
-
-            if(IsEmpty)
+            //If list is empty, we're done son
+            if (IsEmpty)
             {
                 return;
             }
 
-            //Remove head
-
+            //Remove Head
             if (Head.Data.Equals(value))
-            {              
-                
+            {
+                Head = Head.Next;
+
                 //1-element list
-                if(Head == Tail)
+                if (Head == Tail)
                 {
                     Tail = null;
-                    //Head = null;
+                    Head = null;
                 }
 
-                else
-                {
-                    Head = Head.Next;
-                }
                 length--;
                 return;
             }
 
-            // Remove non-head node
-
+            //Remove non-head node
             var currentNode = Head;
-
             while (currentNode != null)
             {
-                // if you already find the node htat needs to be removed, you cannot change the one before 
-                //you cannot go backwards
-                if(currentNode.Next != null && currentNode.Next.Data.Equals(value))
+                if (currentNode.Next != null && currentNode.Next.Data.Equals(value))
                 {
                     var nodeToDelete = currentNode.Next;
-                    
-                    if(nodeToDelete == Tail)
+                    length--;
+                    if (nodeToDelete == Tail)
                     {
                         currentNode.Next = null;
                         Tail = currentNode;
                     }
-
                     else
                     {
                         currentNode.Next = currentNode.Next.Next;
-
                         nodeToDelete.Next = null;
-
                     }
-                    
-                    return; 
+                    return;
+
+
                 }
 
                 currentNode = currentNode.Next;
             }
+
         }
 
-        // Incomplete
         public void RemoveAt(int index)
         {
-            
+            if (index < 0 || index >= length)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+
+            if (index < length && index >= 0)
+            {
+
+                var currentNode = Head;
+                int currentIndex = 0;
+
+
+                if (index == 0)
+                {
+                    var deleteHead = currentNode.Next;
+
+                    Head = currentNode.Next;
+
+                    length--;
+                    return;
+                }
+
+
+
+                while (currentNode != null && currentIndex <= index)
+                {
+
+
+                    if (currentIndex == (index - 1))
+                    {
+                        var prevNode = currentNode;
+                        var nodeToDelete = currentNode.Next;
+                        if (nodeToDelete == Tail)
+                        {
+                            currentNode.Next = null;
+                            Tail = currentNode;
+                        }
+                        else
+                        {
+                            nodeToDelete = currentNode.Next;
+                            prevNode = nodeToDelete.Next;
+                        }
+
+                        length--;
+                        return;
+                    }
+
+
+
+                    currentNode = currentNode.Next;
+                    currentIndex++;
+
+
+                }
+            }
         }
 
-        // Incomplete
         public IList<T> Reverse()
         {
             var reversedList = new LinkedList<T>();
 
+            var currentNode = Head;
+
+            while( currentNode != null)
+            {
+                reversedList.Prepend(currentNode.Data);
+                currentNode = currentNode.Next;
+            }
+
             return reversedList;
+
         }
 
         public override string ToString()
@@ -294,20 +352,20 @@ namespace KthToLast
             for (var currentNode = Head; currentNode != null; currentNode = currentNode.Next)
             {
                 result += currentNode.ToString();
-                if( currentNode != Tail)
+                if (currentNode != Tail)
                 {
-                    result += ",";
+                    result += ", ";
                 }
             }
             result += "]";
-
             return result;
         }
-
         // TODO 
         public T KthToLast(int k)
         {
-            return default(T);
+            var reversedList = Reverse();
+
+            return reversedList.Get(k);
         }
     }
 }

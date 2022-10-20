@@ -46,10 +46,14 @@ namespace Polynomial
         public override string ToString()
         {
             string result = "";
-
-            foreach(var term in terms)
+            var count = 0;
+            foreach (var term in terms)
             {
-                result += term.ToString() + " + ";
+                if (count < terms.Count)
+                {
+                    result += term.ToString() + "+";
+                    count++;
+                }
             }
 
             return result;
@@ -97,7 +101,7 @@ namespace Polynomial
             Polynomial inverse = new Polynomial();
             foreach (var term in p1.terms)
             {
-                inverse.AddTerm(term.Coefficient * -1, term.Power);
+                inverse.AddTerm(-1*(term.Coefficient), term.Power);
             }
             //do work
             return inverse;
