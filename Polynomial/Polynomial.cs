@@ -18,9 +18,14 @@ namespace Polynomial
 		//TODO
         public void AddTerm(double coeff, int power)
         {
+            if (coeff == 0)
+            {
+                return;
+            }
             var currentNode = terms.First;
             while ( currentNode != null )
             {
+
                 //check for matching power
                 if (power == currentNode.Value.Power)
                 {
@@ -47,12 +52,23 @@ namespace Polynomial
         {
             string result = "";
             var count = 0;
+
+            if (terms.Count == 0)
+            {
+                return "0";
+            }
+
             foreach (var term in terms)
             {
-                if (count < terms.Count)
+                
+                if ( term.Coefficient != 0)
                 {
-                    result += term.ToString() + "+";
+                    result += term.ToString();
                     count++;
+                }
+                if (count < terms.Count - 1)
+                {
+                    result += "+";
                 }
             }
 
